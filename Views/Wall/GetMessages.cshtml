@@ -1,0 +1,8 @@
+﻿@model IEnumerable<DemoRPP.Models.Message>
+
+@foreach (var item in Model)
+{
+    <div class="message" id="message_@item.Id" title="Cliquer pour modifier ce message">
+        @Helper.ParseContent(@item.Text)
+    </div>
+}

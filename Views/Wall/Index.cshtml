@@ -1,0 +1,105 @@
+﻿@{
+    ViewBag.Title = "Wall";
+}
+
+<div class="messagesContainer">
+    <h2>Mur de messages</h2>
+    <hr />
+    <div id="MessagesContainer">
+    </div>
+    <hr />
+    <div class="messageSenderContainer">
+        <input type="text" id="Message" placeholder="Tapez votre message..." class="form-control" />
+        <span id="SendCommand" class="icon fa fa-paper-plane" style="margin-top:5px"></span>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let editor = null;
+        let targetedMessageContainer = null;
+        $(function () {
+            let messagesUpdater = new PartialRefresh("@Url.Action("GetMessages")", "MessagesContainer", 2, UpdateUIEventsCallback);
+            function UpdateUIEventsCallback() {
+                $(".message").click(function () {
+                    let messageId = $(this).attr("id").split("_")[1];
+                    messagesUpdater.pause();
+                    createMessageEditor(messageId);
+                })
+                $("a").click(function (event) {
+                    event.stopPropagation()
+                });
+            }
+           
+            function deleteMessageEditor() {
+                if (editor != null)
+                    editor.remove();
+                if (targetedMessageContainer != null)
+                    targetedMessageContainer.show();
+            }
+            $(document).click(function () { deleteMessageEditor(); })
+
+            function createMessageEditor(messageId) {
+                deleteMessageEditor();
+                targetedMessageContainer = $(`#message_${messageId}`);
+               
+                messagesUpdater.command(`/Wall/GetMessage?id=${messageId}`, function (messageText) {
+                    targetedMessageContainer.hide();
+                    let input = $(`<textarea>${messageText.trim()}</textarea>"`);
+                    
+                    let acceptCmd = $(`<span class="iconSmall fa fa-check" title="Modifier"></span>`);
+                    let deleteCmd = $(`<span class="iconSmall fa fa-times" title="Effacer ce message"></span>`);
+                    editor = $(`<div class="messageEditorContainer" id="messageEditor" >`);
+                    editor.append(input, acceptCmd, deleteCmd);
+                    editor.insertAfter(targetedMessageContainer);
+                    input.height(input[0].scrollHeight - 30);
+                    input.focus();
+                    input.val(input.val() + ' ');
+                    input.keyup(function (event) {
+                        if (event.key == "Escape") {
+                            targetedMessageContainer.show();
+                            deleteMessageEditor();
+                            messagesUpdater.restart();
+                        }
+                    })
+                    input.click(function (event) {
+                        event.stopPropagation()
+                    })
+                    acceptCmd.click(function () {
+                        messagesUpdater.command(`/Wall/UpdateMessage?id=${messageId}&message=${input.val()}`);
+                        messagesUpdater.restart();
+                    })
+                    deleteCmd.click(function () {
+                        bootbox.confirm("Effacer ce message?", function (result) {
+                            if (result) {
+                                messagesUpdater.command(`/Wall/DeleteMessage?id=${messageId}`);
+                                messagesUpdater.restart();
+                            }
+                        })
+                    })
+                })
+            }
+
+            function sendMessage() {
+                let message = $("#Message").val();
+                if (message != "") {
+                    $("#Message").val("");
+                    messagesUpdater.command(`/Wall/CreateMessage?message=${message}`)
+                }
+            }
+            $("#Message").keypress(function (event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '13') {
+                    sendMessage();
+                }
+            })
+            $("#SendCommand").on("click", function () {
+                sendMessage();
+            })
+        })
+    </script>
+
+
+
+}
+

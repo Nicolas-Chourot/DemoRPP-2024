@@ -1,0 +1,99 @@
+﻿
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+}
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    margin-top: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 380px;
+}
+
+.main {
+    padding: 20px;
+}
+
+.icon {
+    color: dodgerblue;
+    font-size: 25px;
+}
+
+.iconSmall {
+    color: dodgerblue;
+    font-size: 18px;
+    margin-top: 5px;
+}
+
+.messagesContainer {
+    padding: 10PX;
+    max-width: 400px;
+    margin: auto;
+}
+
+.message {
+    border-radius: 8px;
+    background-color: goldenrod;
+    padding: 10px;
+    margin: 5px;
+    cursor: cell;
+    border: 2px solid goldenrod;
+}
+
+    .message:hover {
+        border: 2px solid darkgoldenrod;
+    }
+
+.messageEditorContainer {
+    display: grid;
+    grid-template-columns: auto 20px 20px;
+    align-items: normal;
+}
+
+    .messageEditorContainer textarea {
+        border: 2px solid goldenrod !important;
+        border-radius: 8px;
+        background-color: lightgoldenrodyellow;
+        padding: 10px;
+        margin: 5px;
+        text-align: left;
+    }
+
+.messageSenderContainer {
+    display: grid;
+    grid-template-columns: auto 35px;
+    column-gap: 10px;
+    margin-bottom: 10px
+}
+
+
+
+.contentImage {
+    width: 100%;
+    border: 2px solid rgba(0, 0, 0, 0);
+}
+
+    .contentImage:hover {
+        border: 2px solid dodgerblue;
+    }
+
+div2 {
+    border: 1px solid red;
+}
