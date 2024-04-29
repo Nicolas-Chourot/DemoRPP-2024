@@ -23,7 +23,6 @@
             function UpdateUIEventsCallback() {
                 $(".message").click(function () {
                     let messageId = $(this).attr("id").split("_")[1];
-                    messagesUpdater.pause();
                     createMessageEditor(messageId);
                 })
                 $("a").click(function (event) {
@@ -32,8 +31,11 @@
             }
            
             function deleteMessageEditor() {
-                if (editor != null)
+                if (editor != null) {
                     editor.remove();
+                    messagesUpdater.restart();
+                    editor = null;
+                }
                 if (targetedMessageContainer != null)
                     targetedMessageContainer.show();
             }
@@ -41,6 +43,7 @@
 
             function createMessageEditor(messageId) {
                 deleteMessageEditor();
+                messagesUpdater.pause();
                 targetedMessageContainer = $(`#message_${messageId}`);
                
                 messagesUpdater.command(`/Wall/GetMessage?id=${messageId}`, function (messageText) {
